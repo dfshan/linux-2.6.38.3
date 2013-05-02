@@ -1,0 +1,3 @@
+config OPT
+	tristate "optical path"
+	default y
