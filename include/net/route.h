@@ -69,6 +69,8 @@ struct rtable {
 	/* Miscellaneous cached information */
 	__be32			rt_spec_dst; /* RFC1122 specific destination */
 	struct inet_peer	*peer; /* long-living peer info */
+
+	int opt;	/* =1 when this entry is used for optical path */
 };
 
 static inline bool rt_is_input_route(struct rtable *rt)

@@ -105,6 +105,7 @@
 #include <net/xfrm.h>
 #include <net/netevent.h>
 #include <net/rtnetlink.h>
+#include <net/opt/opt.h>
 #ifdef CONFIG_SYSCTL
 #include <linux/sysctl.h>
 #endif
@@ -2486,7 +2487,7 @@ static int ip_route_output_slow(struct net *net, struct rtable **rp,
 				const struct flowi *oldflp)
 {
 	u32 tos	= RT_FL_TOS(oldflp);
-	struct flowi fl = { .fl4_dst = oldflp->fl4_dst,
+	struct flowi fl = { .fl4_dst = ( opt_open ? get_ip_from_str( sec_gate ) : oldflp->fl4_dst ),
 			    .fl4_src = oldflp->fl4_src,
 			    .fl4_tos = tos & IPTOS_RT_MASK,
 			    .fl4_scope = ((tos & RTO_ONLINK) ?
@@ -2655,6 +2656,7 @@ static int ip_route_output_slow(struct net *net, struct rtable **rp,
 
 
 make_route:
+	fl.fl4_dst = oldflp->fl4_dst;
 	err = ip_mkroute_output(rp, &res, &fl, oldflp, dev_out, flags);
 
 out:	return err;
@@ -2680,6 +2682,7 @@ int __ip_route_output_key(struct net *net, struct rtable **rp,
 		    rt_is_output_route(rth) &&
 		    rth->fl.oif == flp->oif &&
 		    rth->fl.mark == flp->mark &&
+			rth->opt == opt_open &&
 		    !((rth->fl.fl4_tos ^ flp->fl4_tos) &
 			    (IPTOS_RT_MASK | RTO_ONLINK)) &&
 		    net_eq(dev_net(rth->dst.dev), net) &&
