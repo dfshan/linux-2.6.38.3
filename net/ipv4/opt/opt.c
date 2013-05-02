@@ -56,13 +56,13 @@ struct ctl_table net_ipv4_opt_table[] = {
 };
 EXPORT_SYMBOL( net_ipv4_opt_table ); 
 
-struct ctl_path net_ipv4_opt_ctl_path[] = {
+struct ctl_path net_ipv4_opt_path[] = {
 	{ .procname = "net", },
 	{ .procname = "ipv4", },
 	{ .procname = "opt", },
 	{ },
 };
-EXPORT_SYMBOL( net_ipv4_opt_ctl_path );
+EXPORT_SYMBOL( net_ipv4_opt_path );
 
 /*
  *

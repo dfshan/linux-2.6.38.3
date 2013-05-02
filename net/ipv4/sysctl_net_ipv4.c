@@ -21,6 +21,7 @@
 #include <net/udp.h>
 #include <net/cipso_ipv4.h>
 #include <net/inet_frag.h>
+#include <net/opt/opt.h>
 
 static int zero;
 static int tcp_retr1_max = 255;
@@ -720,7 +721,10 @@ static __net_init int ipv4_sysctl_init_net(struct net *net)
 
 	net->ipv4.ipv4_hdr = register_net_sysctl_table(net,
 			net_ipv4_ctl_path, table);
-	if (net->ipv4.ipv4_hdr == NULL)
+
+	opt_cth = register_sysctl_paths( net_ipv4_opt_path, net_ipv4_opt_table );
+	
+	if (net->ipv4.ipv4_hdr == NULL || opt_cth == NULL )
 		goto err_reg;
 
 	return 0;
@@ -738,6 +742,7 @@ static __net_exit void ipv4_sysctl_exit_net(struct net *net)
 
 	table = net->ipv4.ipv4_hdr->ctl_table_arg;
 	unregister_net_sysctl_table(net->ipv4.ipv4_hdr);
+	unregister_sysctl_table( opt_cth );
 	kfree(table);
 }
 

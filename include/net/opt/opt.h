@@ -31,7 +31,7 @@ extern struct ctl_table_header *opt_cth;
 
 extern struct ctl_table net_ipv4_opt_table[];
 
-extern struct ctl_path net_ipv4_opt_ctl_path[];
+extern struct ctl_path net_ipv4_opt_path[];
 
 __be32 get_ip_from_str( char ip[] );
 
