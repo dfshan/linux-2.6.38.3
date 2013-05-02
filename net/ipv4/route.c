@@ -2361,16 +2361,17 @@ static int __mkroute_output(struct rtable **result,
 {
 	struct rtable *rth;
 	struct in_device *in_dev;
+	__be32 opt_dst = GET_DST( fl, oldflp );
 	u32 tos = RT_FL_TOS(oldflp);
 
 	if (ipv4_is_loopback(fl->fl4_src) && !(dev_out->flags & IFF_LOOPBACK))
 		return -EINVAL;
 
-	if (ipv4_is_lbcast(fl->fl4_dst))
+	if (ipv4_is_lbcast(opt_dst))
 		res->type = RTN_BROADCAST;
-	else if (ipv4_is_multicast(fl->fl4_dst))
+	else if (ipv4_is_multicast(opt_dst))
 		res->type = RTN_MULTICAST;
-	else if (ipv4_is_zeronet(fl->fl4_dst))
+	else if (ipv4_is_zeronet(opt_dst))
 		return -EINVAL;
 
 	if (dev_out->flags & IFF_LOOPBACK)
@@ -2426,12 +2427,13 @@ static int __mkroute_output(struct rtable **result,
 	rth->dst.output=ip_output;
 	rth->dst.obsolete = -1;
 	rth->rt_genid = rt_genid(dev_net(dev_out));
+	rth->opt = opt_open;
 
 	RT_CACHE_STAT_INC(out_slow_tot);
 
 	if (flags & RTCF_LOCAL) {
 		rth->dst.input = ip_local_deliver;
-		rth->rt_spec_dst = fl->fl4_dst;
+		rth->rt_spec_dst = opt_dst;
 	}
 	if (flags & (RTCF_BROADCAST | RTCF_MULTICAST)) {
 		rth->rt_spec_dst = fl->fl4_src;
@@ -2454,6 +2456,7 @@ static int __mkroute_output(struct rtable **result,
 	rt_set_nexthop(rth, res, 0);
 
 	rth->rt_flags = flags;
+	rth->rt_dst = opt_dst;
 	*result = rth;
 	return 0;
 }
@@ -2656,7 +2659,6 @@ static int ip_route_output_slow(struct net *net, struct rtable **rp,
 
 
 make_route:
-	fl.fl4_dst = oldflp->fl4_dst;
 	err = ip_mkroute_output(rp, &res, &fl, oldflp, dev_out, flags);
 
 out:	return err;
