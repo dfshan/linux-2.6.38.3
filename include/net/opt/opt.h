@@ -13,7 +13,7 @@
 #include <linux/sysctl.h>
 #include <net/dst.h>
 
-#define GET_DST(fl, oldflp) ( opt_open?oldflp->fl4_dst:fl->fl4.dst )
+#define GET_DST(fl, oldflp) ( opt_open ? oldflp->fl4_dst : fl->fl4_dst )
 
 /* true when enable the optical path */
 extern int opt_open;
