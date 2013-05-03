@@ -1139,7 +1139,7 @@ restart:
 			rt_free(rth);
 			continue;
 		}
-		if (compare_keys(&rth->fl, &rt->fl) && compare_netns(rth, rt)) {
+		if ( rth->opt == rt->opt && compare_keys(&rth->fl, &rt->fl) && compare_netns(rth, rt)) {
 			/* Put it first */
 			*rthp = rth->dst.rt_next;
 			/*
