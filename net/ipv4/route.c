@@ -1115,7 +1115,6 @@ restart:
 
 		rt->dst.flags |= DST_NOCACHE;
 		if (rt->rt_type == RTN_UNICAST || rt_is_output_route(rt)) {
-			rt->dst.neighbour = NULL;
 			int err = arp_bind_neighbour(&rt->dst);
 			if (err) {
 				if (net_ratelimit())
@@ -1214,7 +1213,6 @@ restart:
 	   route or unicast forwarding path.
 	 */
 	if (rt->rt_type == RTN_UNICAST || rt_is_output_route(rt)) {
-		rt->dst.neighbour = NULL;
 		int err = arp_bind_neighbour(&rt->dst);
 		if (err) {
 			spin_unlock_bh(rt_hash_lock_addr(hash));
