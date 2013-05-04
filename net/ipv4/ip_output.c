@@ -328,21 +328,15 @@ int ip_queue_xmit(struct sk_buff *skb)
 	 */
 	rcu_read_lock();
 	rt = skb_rtable(skb);
-	if (rt != NULL) {
-		if( inet->inet_daddr == 0x7b01a8c0 )
-			printk( "--------debug info: packet to 192.168.1.123 is routed\n" );
+	if (rt != NULL)
 		goto packet_routed;
-	}
 
 	/* Make sure we can route this packet. */
 	rt = (struct rtable *)__sk_dst_check(sk, 0);
-	if( rt->opt != opt_open )
-		rt = NULL;
 
-	if (rt == NULL) {
+
+	if (rt == NULL || rt->opt != opt_open ) {
 		__be32 daddr;
-		if( inet->inet_daddr == 0x7b01a8c0 )
-			printk( "--------debug info: packet to 192.168.1.123 is routed\n" );
 
 		/* Use correct destination address if we have options. */
 		daddr = inet->inet_daddr;
