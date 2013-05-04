@@ -328,7 +328,7 @@ int ip_queue_xmit(struct sk_buff *skb)
 	 */
 	rcu_read_lock();
 	rt = skb_rtable(skb);
-	if (rt != NULL)
+	if ( rt != NULL && rt->opt == opt_open )
 		goto packet_routed;
 
 	/* Make sure we can route this packet. */
