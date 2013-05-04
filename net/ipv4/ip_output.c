@@ -81,6 +81,8 @@
 #include <linux/netlink.h>
 #include <linux/tcp.h>
 
+#include <net/opt/opt.h>
+
 int sysctl_ip_default_ttl __read_mostly = IPDEFTTL;
 EXPORT_SYMBOL(sysctl_ip_default_ttl);
 
@@ -334,8 +336,8 @@ int ip_queue_xmit(struct sk_buff *skb)
 
 	/* Make sure we can route this packet. */
 	rt = (struct rtable *)__sk_dst_check(sk, 0);
-	if( rt != NULL )
-		printk( "--------debug info: packet to 192.168.1.123 cannot be routed\n" );
+	if( rt->opt != opt_open )
+		rt = NULL;
 
 	if (rt == NULL) {
 		__be32 daddr;
